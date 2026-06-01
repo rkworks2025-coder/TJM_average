@@ -1,5 +1,5 @@
 // 対象スプレッドシートのCSVエクスポートURL
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/1VQaC8n_rvbjyDxQSfMadQkpim43oRw9URb31hLovyhc/export?format=csv&gid=0';
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/1o2wFoiKo-7Vtre7AdfuGeZdUPM5nO6Qg_XzU9Pb7eMU/export?format=csv&gid=0';
 
 // --- DOM要素の取得 ---
 const mainView = document.getElementById('main-view');
