@@ -36,9 +36,30 @@ let appState = {
 let lastFetchedCount = 0;
 let lastFetchedTotalDuration = 0;
 
+// --- 保存キー ---
+// 同一オリジン（rkworks2025-coder.github.io）のRK_portalが担当者切替等で
+// localStorageを全消去する際、tjm:接頭辞のキーは消去対象外となるため、
+// 戸島用の計測データは tjm: 付きのキーで保存する。
+const STATE_KEY = 'tjm:workMonitorState';
+const LEGACY_STATE_KEY = 'workMonitorState';
+
+// ===== 旧キー(workMonitorState)→新キー(tjm:workMonitorState) 移行 =====
+// ・新キーに既に値がある場合は上書きしない（移行後のデータを壊さない）
+// ・旧キーは削除しない（同一オリジンのRK_portal側が同じキー名を使っているため）
+(function migrateLegacyStateKey() {
+  try {
+    if (localStorage.getItem(STATE_KEY) === null) {
+      const legacy = localStorage.getItem(LEGACY_STATE_KEY);
+      if (legacy !== null) localStorage.setItem(STATE_KEY, legacy);
+    }
+  } catch (e) {
+    console.warn("legacy key migration failed", e);
+  }
+})();
+
 // --- 初期化処理 ---
 function init() {
-  const savedState = localStorage.getItem('workMonitorState');
+  const savedState = localStorage.getItem(STATE_KEY);
   if (savedState) {
     try {
       appState = JSON.parse(savedState);
@@ -50,7 +71,7 @@ function init() {
 }
 
 function saveState() {
-  localStorage.setItem('workMonitorState', JSON.stringify(appState));
+  localStorage.setItem(STATE_KEY, JSON.stringify(appState));
 }
 
 /**
@@ -333,7 +354,7 @@ addRestBtn.addEventListener('click', () => {
 });
 
 cancelEditBtn.addEventListener('click', () => {
-  const savedState = localStorage.getItem('workMonitorState');
+  const savedState = localStorage.getItem(STATE_KEY);
   if (savedState) {
     appState = JSON.parse(savedState);
   }
